@@ -3,7 +3,7 @@ const usersModel = require('../models/usersModel');
 
 function get(req, res) {
   let allExpenses = expensesModel.getAllExpenses();
-  const { userId, from, to, category } = req.query;
+  const { userId, from, to, categories } = req.query;
 
   // if (!allExpenses.length) {
   //   return res.status(404).json({ message: 'Expenses not found' });
@@ -12,13 +12,16 @@ function get(req, res) {
     allExpenses = allExpenses.filter((exp) => exp.userId === +userId);
   }
 
-  if (category) {
-    allExpenses = allExpenses.filter((exp) => exp.category === category);
+  if (categories) {
+    const catList = categories.split(',');
+
+    allExpenses = allExpenses.filter((exp) => catList.includes(exp.category));
   }
 
   if (from || to) {
-    const fromDate = from ? new Date(from) : new Date('0000-01-01');
-    const toDate = to ? new Date(to) : new Date(Date.now());
+    const fromDate =
+      from && !isNaN(Date.parse(from)) ? new Date(from) : new Date(0);
+    const toDate = to && !isNaN(Date.parse(to)) ? new Date(to) : new Date();
 
     allExpenses = allExpenses.filter((exp) => {
       const spentAt = new Date(exp.spentAt);
@@ -73,7 +76,7 @@ function create(req, res) {
   }
 
   if (typeof amount !== 'number') {
-    return res.status(400).json({ message: 'Invalid anount' });
+    return res.status(400).json({ message: 'Invalid amount' });
   }
 
   if (typeof category !== 'string') {
@@ -110,7 +113,7 @@ function remove(req, res) {
   }
 
   expensesModel.deleteExpense(id);
-  res.status(204).json({ message: 'Expense deleted' });
+  res.status(204).end();
 }
 
 function update(req, res) {

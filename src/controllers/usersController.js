@@ -52,7 +52,7 @@ function remove(req, res) {
   }
 
   usersModel.deleteUser(id);
-  res.status(204).json({ message: 'User deleted' });
+  res.status(204).end();
 }
 
 function update(req, res) {

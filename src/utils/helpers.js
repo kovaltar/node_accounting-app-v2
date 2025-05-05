@@ -5,7 +5,7 @@ function getAll(array) {
 function getById(array, id) {
   const numID = +id;
 
-  return array.find((item) => item.id === numID || null);
+  return array.find((item) => item.id === numID) || null;
 }
 
 function deleteById(array, id) {
