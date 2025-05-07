@@ -1,6 +1,5 @@
 const { getAll, getById, deleteById } = require('../utils/helpers');
 let nextExpenseId = 1;
-
 const expenses = [];
 const expensesKeys = [
   'userId',
@@ -11,19 +10,24 @@ const expensesKeys = [
   'note',
 ];
 
-function getAllExpenses() {
+function resetExpenses() {
+  expenses.length = 0;
+  nextExpenseId = 1;
+}
+
+async function getAllExpenses() {
   return getAll(expenses);
 }
 
-function getExpenseById(id) {
+async function getExpenseById(id) {
   return getById(expenses, id);
 }
 
-function deleteExpense(id) {
+async function deleteExpense(id) {
   return deleteById(expenses, id);
 }
 
-function createExpense(data) {
+async function createExpense(data) {
   const expense = { id: nextExpenseId++, ...data };
 
   expenses.push(expense);
@@ -31,7 +35,7 @@ function createExpense(data) {
   return expense;
 }
 
-function updateExpense(id, data) {
+async function updateExpense(id, data) {
   const expense = expenses.find((exp) => exp.id === id);
 
   if (!expense) {
@@ -53,4 +57,5 @@ module.exports = {
   deleteExpense,
   createExpense,
   updateExpense,
+  resetExpenses,
 };

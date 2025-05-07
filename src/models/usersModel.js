@@ -1,22 +1,28 @@
 const { getAll, getById, deleteById } = require('../utils/helpers');
 
 let nextUserId = 1;
+
 const users = [];
 const usersKeys = ['name'];
 
-function getAllUsers() {
+function resetUsers() {
+  users.length = 0;
+  nextUserId = 1;
+}
+
+async function getAllUsers() {
   return getAll(users);
 }
 
-function getUserById(id) {
+async function getUserById(id) {
   return getById(users, id);
 }
 
-function deleteUser(id) {
+async function deleteUser(id) {
   return deleteById(users, id);
 }
 
-function createUser(name) {
+async function createUser(name) {
   const user = { id: nextUserId++, name };
 
   users.push(user);
@@ -24,7 +30,7 @@ function createUser(name) {
   return user;
 }
 
-function updateUser(id, data) {
+async function updateUser(id, data) {
   const user = users.find((usr) => usr.id === id);
 
   if (!user) {
@@ -46,4 +52,5 @@ module.exports = {
   deleteUser,
   createUser,
   updateUser,
+  resetUsers,
 };

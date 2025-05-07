@@ -1,61 +1,78 @@
+/* eslint-disable no-console */
 const usersModel = require('../models/usersModel.js');
 
-function get(req, res) {
-  const allUsers = usersModel.getAllUsers();
+async function get(req, res) {
+  try {
+    const allUsers = await usersModel.getAllUsers();
 
-  // if (!allUsers.length) {
-  //   return res.status(404).json({ message: 'Users not found' });
-  // }
-
-  res.status(200).json(allUsers);
+    res.status(200).json(allUsers);
+  } catch (err) {
+    console.error('Failed to get users', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 }
 
-function getOne(req, res) {
+async function getOne(req, res) {
   const id = +req.params.id;
 
   if (isNaN(id)) {
     return res.status(400).json({ message: 'Invalid ID' });
   }
 
-  const user = usersModel.getUserById(id);
+  try {
+    const user = await usersModel.getUserById(id);
 
-  if (!user) {
-    return res.status(404).json({ message: 'User not found' });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.error('Failed to get user', err);
+    res.status(500).json({ message: 'Internal server error' });
   }
-
-  res.status(200).json(user);
 }
 
-function create(req, res) {
+async function create(req, res) {
   const { name } = req.body;
 
   if (!name) {
     return res.status(400).json({ message: 'Name is required' });
   }
 
-  const user = usersModel.createUser(name);
+  try {
+    const user = await usersModel.createUser(name);
 
-  res.status(201).json(user);
+    res.status(201).json(user);
+  } catch (err) {
+    console.error('Failed to create user', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 }
 
-function remove(req, res) {
+async function remove(req, res) {
   const id = +req.params.id;
 
   if (isNaN(id)) {
     return res.status(400).json({ message: 'Invalid ID' });
   }
 
-  const user = usersModel.getUserById(id);
+  try {
+    const user = await usersModel.getUserById(id);
 
-  if (!user) {
-    return res.status(404).json({ message: 'User not found' });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    await usersModel.deleteUser(id);
+    res.status(204).end();
+  } catch (err) {
+    console.error('Failed to delete user', err);
+    res.status(500).json({ message: 'Internal server error' });
   }
-
-  usersModel.deleteUser(id);
-  res.status(204).end();
 }
 
-function update(req, res) {
+async function update(req, res) {
   const id = +req.params.id;
 
   if (isNaN(id)) {
@@ -64,19 +81,24 @@ function update(req, res) {
 
   const body = req.body;
 
-  const user = usersModel.getUserById(id);
+  try {
+    const user = await usersModel.getUserById(id);
 
-  if (!user) {
-    return res.status(404).json({ message: 'User not found' });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (!body.name) {
+      return res.status(400).json({ message: 'Name is required' });
+    }
+
+    const updatedUser = await usersModel.updateUser(id, body);
+
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error('Failed to update user', err);
+    res.status(500).json({ message: 'Internal server error' });
   }
-
-  if (!body.name) {
-    return res.status(400).json({ message: 'Name is required' });
-  }
-
-  const updatedUser = usersModel.updateUser(id, body);
-
-  res.status(200).json(updatedUser);
 }
 
 module.exports = {

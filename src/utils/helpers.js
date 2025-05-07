@@ -1,14 +1,14 @@
-function getAll(array) {
+async function getAll(array) {
   return array;
 }
 
-function getById(array, id) {
+async function getById(array, id) {
   const numID = +id;
 
   return array.find((item) => item.id === numID) || null;
 }
 
-function deleteById(array, id) {
+async function deleteById(array, id) {
   const numID = +id;
   const index = array.findIndex((item) => item.id === numID);
 
