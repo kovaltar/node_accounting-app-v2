@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-const usersModel = require('../models/usersModel.js');
+const usersModel = require('../services/User.service.js');
 
 async function get(req, res) {
   try {

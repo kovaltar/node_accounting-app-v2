@@ -1,10 +1,11 @@
 'use strict';
 
 const express = require('express');
-const expensesModel = require('./models/expensesModel');
-const usersModel = require('./models/usersModel');
-const usersRouter = require('./routes/usersRoutes.js');
-const expensesRouter = require('./routes/expensesRoutes.js');
+const cors = require('cors');
+const expensesModel = require('./services/Expense.service.js');
+const usersModel = require('./services/User.service.js');
+const usersRouter = require('./routes/User.routes.js');
+const expensesRouter = require('./routes/Expense.routes.js');
 
 function createServer() {
   if (process.env.NODE_ENV === 'test') {
@@ -14,8 +15,10 @@ function createServer() {
 
   const app = express();
 
-  app.use('/users', express.json(), usersRouter);
-  app.use('/expenses', express.json(), expensesRouter);
+  app.use(cors());
+  app.use(express.json());
+  app.use('/users', usersRouter);
+  app.use('/expenses', expensesRouter);
 
   return app;
 }

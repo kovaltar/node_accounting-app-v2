@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-const expensesModel = require('../models/expensesModel');
-const usersModel = require('../models/usersModel');
+const expensesModel = require('../services/Expense.service');
+const usersModel = require('../services/User.service');
 
 async function get(req, res) {
   try {
@@ -103,7 +103,7 @@ async function create(req, res) {
       return res.status(400).json({ message: 'Invalid category' });
     }
 
-    if (typeof note !== 'string') {
+    if (note !== undefined && typeof note !== 'string') {
       return res.status(400).json({ message: 'Invalid note' });
     }
 
